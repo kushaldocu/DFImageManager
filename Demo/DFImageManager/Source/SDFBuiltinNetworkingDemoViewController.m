@@ -71,7 +71,8 @@ static NSString * const reuseIdentifier = @"Cell";
         imageView.tag = 15;
         [cell addSubview:imageView];
     }
-    
+   
+
     NSURL *URL = _photos[indexPath.row];
     [imageView prepareForReuse];
     [imageView setImageWithResource:URL targetSize:[self _imageTargetSize] contentMode:DFImageContentModeAspectFill options:nil];

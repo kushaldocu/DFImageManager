@@ -10,6 +10,10 @@
 
 /*! The DFImageView extends UIImageView class with image fetching functionality. It also adds other features like managing request priorities and more.
  */
+
+typedef void (^CompletetionImage)(UIImage * _Nullable obj);
+
+
 @interface DFImageView : UIImageView
 
 /*! Image manager used by the image view. Set to the shared manager during initialization.
@@ -51,5 +55,9 @@
 /*! Subclassing hook that gets called when the completion block is called for the current image fetch task.
  */
 - (void)didCompleteImageTask:(nonnull DFImageTask *)task withImage:(nullable UIImage *)image;
+@property ( nonatomic, copy) CompletetionImage imageBlock;
+
+-(void)didImageLoaded:(_Nullable CompletetionImage)imageBlock;
+
 
 @end

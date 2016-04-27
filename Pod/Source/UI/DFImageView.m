@@ -13,7 +13,7 @@
 #import "DFImageView.h"
 
 @implementation DFImageView
-
+@synthesize imageBlock;
 - (void)dealloc {
     [self _cancelFetching];
 }
@@ -43,7 +43,11 @@
 - (void)prepareForReuse {
     [self _cancelFetching];
     self.image = nil;
+    self.imageBlock(self.image);
     [self.layer removeAllAnimations];
+}
+-(void)didImageLoaded:(CompletetionImage)imageBlock{
+    self.imageBlock = imageBlock;
 }
 
 - (void)_cancelFetching {
@@ -72,6 +76,7 @@
     }];
     task.progressiveImageHandler = ^(UIImage *__nonnull image){
         weakSelf.image = image;
+        self.imageBlock(image);
     };
     _imageTask = task;
     [task resume];
@@ -80,6 +85,7 @@
 - (void)didCompleteImageTask:(nonnull DFImageTask *)task withImage:(nullable UIImage *)image {
     if (self.allowsAnimations && !task.response.isFastResponse && !self.image) {
         self.image = image;
+        self.imageBlock(image);
         [self.layer addAnimation:({
             CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"opacity"];
             animation.keyPath = @"opacity";
@@ -90,6 +96,7 @@
         }) forKey:@"opacity"];
     } else {
         self.image = image;
+        self.imageBlock(image);
     }
 }
 
