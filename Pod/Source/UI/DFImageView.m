@@ -43,11 +43,14 @@
 - (void)prepareForReuse {
     [self _cancelFetching];
     self.image = nil;
-    self.imageBlock(self.image);
+    if (self.imageBlock) {
+        self.imageBlock(self.image);
+    }
+
     [self.layer removeAllAnimations];
 }
--(void)didImageLoaded:(CompletetionImage)imageBlock{
-    self.imageBlock = imageBlock;
+-(void)didImageLoaded:(CompletetionImage)newBlock{
+    self.imageBlock = newBlock;
 }
 
 - (void)_cancelFetching {
@@ -76,7 +79,9 @@
     }];
     task.progressiveImageHandler = ^(UIImage *__nonnull image){
         weakSelf.image = image;
-        self.imageBlock(image);
+        if (self.imageBlock) {
+            self.imageBlock(self.image);
+        }
     };
     _imageTask = task;
     [task resume];
@@ -85,7 +90,9 @@
 - (void)didCompleteImageTask:(nonnull DFImageTask *)task withImage:(nullable UIImage *)image {
     if (self.allowsAnimations && !task.response.isFastResponse && !self.image) {
         self.image = image;
-        self.imageBlock(image);
+        if (self.imageBlock) {
+            self.imageBlock(self.image);
+        }
         [self.layer addAnimation:({
             CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"opacity"];
             animation.keyPath = @"opacity";
@@ -96,7 +103,9 @@
         }) forKey:@"opacity"];
     } else {
         self.image = image;
-        self.imageBlock(image);
+        if (self.imageBlock) {
+            self.imageBlock(self.image);
+        }
     }
 }
 
